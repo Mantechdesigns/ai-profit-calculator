@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { createGHLContact } from '../lib/ghl';
 
 interface LeadMagnetProps {
@@ -41,24 +41,26 @@ export default function LeadMagnet({ savings, formData }: LeadMagnetProps) {
         throw new Error('Failed to create contact in Go High Level');
       }
 
-      // Store in Supabase
-      const { error: dbError } = await supabase
-        .from('submissions')
-        .insert([
-          {
-            email,
-            monthly_leads: formData.monthlyLeads,
-            lead_value: formData.leadValue,
-            operational_costs: formData.operationalCosts,
-            admin_hours: formData.adminHours,
-            marketing_spend: formData.marketingSpend,
-            churn_rate: formData.churnRate,
-            ghl_contact_id: ghlResponse.contact.id,
-            annual_savings: savings,
-          },
-        ]);
+      // Store in Supabase if configured
+      if (isSupabaseConfigured() && supabase) {
+        const { error: dbError } = await supabase
+          .from('submissions')
+          .insert([
+            {
+              email,
+              monthly_leads: formData.monthlyLeads,
+              lead_value: formData.leadValue,
+              operational_costs: formData.operationalCosts,
+              admin_hours: formData.adminHours,
+              marketing_spend: formData.marketingSpend,
+              churn_rate: formData.churnRate,
+              ghl_contact_id: ghlResponse.contact.id,
+              annual_savings: savings,
+            },
+          ]);
 
-      if (dbError) throw dbError;
+        if (dbError) throw dbError;
+      }
 
       setSubmitted(true);
       setTimeout(() => {
