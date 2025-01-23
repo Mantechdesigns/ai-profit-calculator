@@ -1,23 +1,28 @@
 const GHL_API_KEY = import.meta.env.VITE_GHL_API_KEY;
 const GHL_LOCATION_ID = import.meta.env.VITE_GHL_LOCATION_ID;
 
-// Field mappings from environment variables
+// Updated field mappings to match GHL custom field names
 const FIELD_MAPPINGS = {
-  monthlyLeads: import.meta.env.VITE_GHL_FIELD_MONTHLY_LEADS,
-  leadValue: import.meta.env.VITE_GHL_FIELD_LEAD_VALUE,
-  operationalCosts: import.meta.env.VITE_GHL_FIELD_OPERATIONAL_COSTS,
-  adminHours: import.meta.env.VITE_GHL_FIELD_ADMIN_HOURS,
-  annualSavings: import.meta.env.VITE_GHL_FIELD_ANNUAL_SAVINGS,
-  marketingSpend: import.meta.env.VITE_GHL_FIELD_MARKETING_SPEND,
-  churnRate: import.meta.env.VITE_GHL_FIELD_CHURN_RATE,
-};
+  monthlyLeads: 'Monthly_leads',
+  leadValue: 'Lead_value', 
+  operationalCosts: 'Operational_costs',
+  adminHours: 'Admin_hours',
+  annualSavings: 'Annual_savings',
+  marketingSpend: 'Marketing_spend',
+  churnRate: 'Churn_rate',
+} as const;
 
-interface GHLContact {
+interface GHLContactPayload {
   email: string;
-  customField: {
-    id: string;
-    value: string;
-  }[];
+  customField: Array<{ id: string; value: string }>;
+  locationId?: string;
+}
+
+interface GHLErrorResponse {
+  message?: string;
+  error?: string;
+  errors?: Array<{ message: string }>;
+  statusCode?: number;
 }
 
 export async function createGHLContact(data: {
@@ -29,56 +34,81 @@ export async function createGHLContact(data: {
   marketingSpend?: number;
   churnRate?: number;
 }) {
+  if (!GHL_API_KEY || !GHL_LOCATION_ID) {
+    throw new Error('Missing required environment variables: VITE_GHL_API_KEY or VITE_GHL_LOCATION_ID');
+  }
+
   const annualSavings = (
     data.monthlyLeads * data.leadValue * 0.2 + 
     data.operationalCosts * 0.15 + 
     data.adminHours * 50
   ) * 12;
 
-  const contact: GHLContact = {
-    email: data.email,
-    customField: [
-      { id: FIELD_MAPPINGS.monthlyLeads, value: data.monthlyLeads.toString() },
-      { id: FIELD_MAPPINGS.leadValue, value: data.leadValue.toString() },
-      { id: FIELD_MAPPINGS.operationalCosts, value: data.operationalCosts.toString() },
-      { id: FIELD_MAPPINGS.adminHours, value: data.adminHours.toString() },
-      { id: FIELD_MAPPINGS.annualSavings, value: annualSavings.toString() },
-    ],
+  // Create customFields object with proper field names
+  const customFields: Record<string, any> = {
+    [FIELD_MAPPINGS.monthlyLeads]: data.monthlyLeads,
+    [FIELD_MAPPINGS.leadValue]: data.leadValue,
+    [FIELD_MAPPINGS.operationalCosts]: data.operationalCosts,
+    [FIELD_MAPPINGS.adminHours]: data.adminHours,
+    [FIELD_MAPPINGS.annualSavings]: annualSavings,
   };
 
-  if (data.marketingSpend) {
-    contact.customField.push({ 
-      id: FIELD_MAPPINGS.marketingSpend, 
-      value: data.marketingSpend.toString() 
+  if (data.marketingSpend !== undefined) {
+    customFields[FIELD_MAPPINGS.marketingSpend] = data.marketingSpend;
+  }
+
+  if (data.churnRate !== undefined) {
+    customFields[FIELD_MAPPINGS.churnRate] = data.churnRate;
+  }
+
+  const payload = {
+    email: data.email,
+    customFields,
+    locationId: GHL_LOCATION_ID,
+  };
+
+  try {
+    console.log('GHL Request Payload:', JSON.stringify(payload, null, 2));
+    
+    const response = await fetch('https://rest.gohighlevel.com/v1/contacts/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GHL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28',
+      },
+      body: JSON.stringify(payload),
     });
+
+    const responseData = await response.json() as GHLErrorResponse;
+    console.log('GHL Response:', JSON.stringify(responseData, null, 2));
+
+    if (!response.ok) {
+      // Extract error message from various possible error response formats
+      const errorMessage = 
+        responseData.message || 
+        responseData.error || 
+        (responseData.errors && responseData.errors[0]?.message) ||
+        `HTTP ${response.status}: Failed to create contact`;
+
+      throw new Error(errorMessage);
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('GHL Error:', error);
+    
+    // Handle network errors and other unexpected errors
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Network error: Unable to connect to GHL API');
+    }
+    
+    if (error instanceof Error) {
+      throw new Error(`GHL API Error: ${error.message}`);
+    }
+    
+    throw new Error('An unexpected error occurred while creating the contact');
   }
-
-  if (data.churnRate) {
-    contact.customField.push({ 
-      id: FIELD_MAPPINGS.churnRate, 
-      value: data.churnRate.toString() 
-    });
-  }
-
-  const response = await fetch(`https://rest.gohighlevel.com/v1/contacts/`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GHL_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Version': '2021-07-28',
-    },
-    body: JSON.stringify({
-      locationId: GHL_LOCATION_ID,
-      ...contact,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || 'Failed to create GHL contact');
-  }
-
-  return response.json();
 }
 
 export async function updateGHLContact(contactId: string, data: {
@@ -90,33 +120,64 @@ export async function updateGHLContact(contactId: string, data: {
   churnRate?: number;
   annualSavings?: number;
 }) {
-  const customField = Object.entries(data).reduce((acc, [key, value]) => {
-    if (value !== undefined && FIELD_MAPPINGS[key]) {
-      acc.push({
-        id: FIELD_MAPPINGS[key],
-        value: value.toString()
-      });
-    }
-    return acc;
-  }, [] as { id: string; value: string }[]);
-
-  const response = await fetch(`https://rest.gohighlevel.com/v1/contacts/${contactId}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${GHL_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Version': '2021-07-28',
-    },
-    body: JSON.stringify({
-      locationId: GHL_LOCATION_ID,
-      customField,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || 'Failed to update GHL contact');
+  if (!GHL_API_KEY || !GHL_LOCATION_ID) {
+    throw new Error('Missing required environment variables: VITE_GHL_API_KEY or VITE_GHL_LOCATION_ID');
   }
 
-  return response.json();
+  const customFields: Record<string, any> = {};
+
+  // Only include fields that are provided
+  if (data.monthlyLeads !== undefined) customFields[FIELD_MAPPINGS.monthlyLeads] = data.monthlyLeads;
+  if (data.leadValue !== undefined) customFields[FIELD_MAPPINGS.leadValue] = data.leadValue;
+  if (data.operationalCosts !== undefined) customFields[FIELD_MAPPINGS.operationalCosts] = data.operationalCosts;
+  if (data.adminHours !== undefined) customFields[FIELD_MAPPINGS.adminHours] = data.adminHours;
+  if (data.annualSavings !== undefined) customFields[FIELD_MAPPINGS.annualSavings] = data.annualSavings;
+  if (data.marketingSpend !== undefined) customFields[FIELD_MAPPINGS.marketingSpend] = data.marketingSpend;
+  if (data.churnRate !== undefined) customFields[FIELD_MAPPINGS.churnRate] = data.churnRate;
+
+  const payload = {
+    customFields,
+    locationId: GHL_LOCATION_ID,
+  };
+
+  try {
+    console.log('GHL Update Request Payload:', JSON.stringify(payload, null, 2));
+
+    const response = await fetch(`https://rest.gohighlevel.com/v1/contacts/${contactId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${GHL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const responseData = await response.json() as GHLErrorResponse;
+    console.log('GHL Update Response:', JSON.stringify(responseData, null, 2));
+
+    if (!response.ok) {
+      const errorMessage = 
+        responseData.message || 
+        responseData.error || 
+        (responseData.errors && responseData.errors[0]?.message) ||
+        `HTTP ${response.status}: Failed to update contact`;
+
+      throw new Error(errorMessage);
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('GHL Update Error:', error);
+    
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Network error: Unable to connect to GHL API');
+    }
+    
+    if (error instanceof Error) {
+      throw new Error(`GHL API Error: ${error.message}`);
+    }
+    
+    throw new Error('An unexpected error occurred while updating the contact');
+  }
 }
