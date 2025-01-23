@@ -124,7 +124,20 @@ export default function LeadMagnet({ savings, formData }: LeadMagnetProps) {
         )}
 
         {!submitted ? (
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+          <form 
+            onSubmit={handleSubmit} 
+            className="max-w-md mx-auto"
+            // Added Netlify attributes here
+            name="profit-calculator"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+          >
+            {/* Added Netlify hidden fields */}
+            <input type="hidden" name="form-name" value="profit-calculator" />
+            <p hidden>
+              <label>Don't fill this out: <input name="bot-field" /></label>
+            </p>
+
             <div className="flex gap-4">
               <input
                 type="email"
