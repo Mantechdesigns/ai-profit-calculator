@@ -65,6 +65,8 @@ export async function createGHLContact(data: {
     email: data.email,
     customFields,
     locationId: GHL_LOCATION_ID,
+    // ADD TAGS HERE 👇
+    tags: ["profit-calculator-submission"]
   };
 
   try {
