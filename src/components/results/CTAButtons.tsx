@@ -1,6 +1,4 @@
-import React from 'react';
-import { Play, Calendar } from 'lucide-react';
-import Button from '../ui/Button';
+import { Calendar, ArrowRight, Lock } from 'lucide-react';
 
 interface CTAButtonsProps {
   onDismiss: () => void;
@@ -9,15 +7,20 @@ interface CTAButtonsProps {
 export default function CTAButtons({ onDismiss }: CTAButtonsProps) {
   return (
     <div className="space-y-3 mt-6">
-      <a
-        href="https://profitleakfix.com/stopleaks-1"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-blue-accent hover:bg-brand-blue-dark text-white font-semibold text-sm rounded-lg transition-all"
+      {/* Primary CTA — curiosity-driven Step 2 hook */}
+      <button
+        onClick={onDismiss}
+        className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-brand-cyan via-brand-blue-accent to-brand-cyan bg-[length:200%_100%] animate-shimmer px-6 py-4 text-white font-bold text-base shadow-lg shadow-brand-cyan/25 hover:shadow-brand-cyan/40 transition-shadow"
       >
-        <Play className="w-4 h-4" />
-        Watch 15-Min Training
-      </a>
+        <div className="flex items-center justify-center gap-2">
+          <Lock className="w-4 h-4" />
+          <span>Unlock Your Custom Fix Plan</span>
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </div>
+        <p className="text-white/80 text-xs mt-1 font-normal">
+          See exactly which leaks to fix first — takes 60 seconds
+        </p>
+      </button>
 
       <a
         href="https://ai.mantechdesigns.com/widget/bookings/resilience"
@@ -28,13 +31,6 @@ export default function CTAButtons({ onDismiss }: CTAButtonsProps) {
         <Calendar className="w-4 h-4" />
         Book Free Strategy Session
       </a>
-
-      <button
-        onClick={onDismiss}
-        className="w-full text-center text-gray-500 text-xs hover:text-gray-400 transition-colors py-2"
-      >
-        Close Results & Continue to Step 2
-      </button>
     </div>
   );
 }

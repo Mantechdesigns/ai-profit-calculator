@@ -118,7 +118,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
           ))}
         </div>
         <p className="text-brand-blue-accent text-sm font-semibold mt-3 text-center">
-          Go to the button below for Step 2.
+          Ready to stop the bleeding? Tap below.
         </p>
       </div>
 
