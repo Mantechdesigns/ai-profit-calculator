@@ -11,6 +11,8 @@ export default {
         'brand-gold-dark': '#967A08',
         'brand-blue': '#188bf6',
         'brand-green': '#22c55e',
+        'brand-green-accent': '#37ca37',
+        'brand-green-dark': '#2da82d',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],

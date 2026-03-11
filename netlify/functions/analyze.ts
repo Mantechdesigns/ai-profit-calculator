@@ -106,7 +106,7 @@ const handler: Handler = async (event) => {
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
-  const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+  const model = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 
   if (!apiKey) {
     return { statusCode: 500, body: JSON.stringify({ error: 'OpenAI API key not configured' }) };
@@ -145,8 +145,8 @@ Calculate the profit leak analysis based on these responses. Use ${estimatedAnnu
           { role: 'user', content: userMessage },
         ],
         response_format: { type: 'json_object' },
-        temperature: 0.7,
-        max_tokens: 2000,
+        temperature: 0.3,
+        max_tokens: 1500,
       }),
     });
 

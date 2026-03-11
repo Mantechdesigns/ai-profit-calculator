@@ -21,7 +21,7 @@ export default function LoadingSpinner() {
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="relative w-16 h-16 mb-6">
         <div className="absolute inset-0 border-4 border-white/10 rounded-full" />
-        <div className="absolute inset-0 border-4 border-brand-gold border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 border-4 border-brand-green-accent border-t-transparent rounded-full animate-spin" />
       </div>
       <p className="text-white text-lg font-semibold mb-2">Generating Your Report</p>
       <p className="text-gray-400 text-sm text-center transition-all duration-300">
