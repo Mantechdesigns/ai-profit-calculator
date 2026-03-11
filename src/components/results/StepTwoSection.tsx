@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Play } from 'lucide-react';
 
 export default function StepTwoSection() {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://ai.mantechdesigns.com/js/form_embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <div className="animate-fadeIn">
       <div className="flex items-center gap-3 mb-4">
@@ -10,7 +20,7 @@ export default function StepTwoSection() {
         </div>
         <div>
           <h2 className="text-white font-bold text-base">Complete Your Strategy Survey</h2>
-          <p className="text-gray-400 text-xs">Help us customize your profit recovery plan</p>
+          <p className="text-gray-400 text-xs">Answer a few quick questions to see if you qualify</p>
         </div>
       </div>
 
@@ -18,8 +28,9 @@ export default function StepTwoSection() {
         <iframe
           src="https://ai.mantechdesigns.com/widget/survey/TuWaHqf61ArtpYON5OTb"
           style={{ width: '100%', minHeight: '500px', border: 'none' }}
-          title="Strategy Survey"
-          allow="clipboard-write"
+          scrolling="no"
+          id="TuWaHqf61ArtpYON5OTb"
+          title="survey"
         />
       </div>
 
