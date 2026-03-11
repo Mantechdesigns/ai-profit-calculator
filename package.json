@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:cf": "npm run build && wrangler dev",
+    "dev:cf": "npm run build && wrangler dev --no-x-autoconfig",
     "build": "vite build",
-    "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev --no-x-autoconfig",
+    "deploy": "npm run build && wrangler deploy --no-x-autoconfig",
     "lint": "eslint ."
   },
   "dependencies": {
