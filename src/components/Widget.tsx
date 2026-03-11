@@ -11,7 +11,7 @@ import StepContactInfo from './steps/StepContactInfo';
 import StepLeadMetrics from './steps/StepLeadMetrics';
 import ResultsPanel from './results/ResultsPanel';
 import StepTwoSection from './results/StepTwoSection';
-import { createGHLContact } from '../lib/ghl';
+import { createGHLContact, sendGHLWebhook } from '../lib/ghl';
 import { supabase } from '../lib/supabase';
 
 type WidgetState = 'form' | 'analyzing' | 'results' | 'results-collapsed' | 'dismissed';
@@ -29,13 +29,16 @@ export default function Widget() {
     if (result) {
       setWidgetState('results');
 
-      // Fire-and-forget: GHL + Supabase
+      // Fire-and-forget: GHL API + GHL Webhook + Supabase
       createGHLContact({
         email: formData.email,
         firstName: formData.firstName,
         formData,
         analysisResults: result,
       }).catch((err) => console.error('GHL contact creation failed:', err));
+
+      sendGHLWebhook(formData, result)
+        .catch((err) => console.error('GHL webhook failed:', err));
 
       supabase?.from('submissions')
         .insert({
