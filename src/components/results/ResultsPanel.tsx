@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { Download, TrendingDown, Zap, Target } from 'lucide-react';
+import { useState } from 'react';
+import { Download, TrendingDown, Zap, Target, ArrowDown } from 'lucide-react';
 import type { AnalysisResponse } from '../../types/analysis';
 import type { AuditFormData } from '../../types/form';
 import PillarCard from './PillarCard';
-import CTAButtons from './CTAButtons';
 import Button from '../ui/Button';
 
 interface ResultsPanelProps {
   analysis: AnalysisResponse;
   formData: AuditFormData;
-  onDismiss: () => void;
 }
 
-export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsPanelProps) {
+export default function ResultsPanel({ analysis, formData }: ResultsPanelProps) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [pdfDownloaded, setPdfDownloaded] = useState(false);
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
@@ -28,6 +27,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      setPdfDownloaded(true);
     } catch (err) {
       console.error('PDF generation failed:', err);
     } finally {
@@ -97,6 +97,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         </p>
       </div>
 
+      {/* PDF Download */}
       <Button
         onClick={handleDownloadPdf}
         disabled={isGeneratingPdf}
@@ -106,23 +107,31 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         {isGeneratingPdf ? 'Generating PDF...' : 'Download Full PDF Report'}
       </Button>
 
-      <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
-        <p className="text-gray-400 text-xs mb-2">Estimated total annual profit leak:</p>
-        <p className="text-brand-cyan font-bold text-lg mb-3">${analysis.totalAnnualLeak.toLocaleString()}</p>
-        <p className="text-gray-400 text-xs">Biggest leak: <span className="text-white">{analysis.biggestLeak}</span></p>
-        <p className="text-gray-400 text-xs mt-1">Best immediate fix: <span className="text-brand-blue-light">{analysis.bestImmediateFix}</span></p>
-        <div className="mt-3">
-          <p className="text-gray-400 text-xs font-medium mb-1">Quick snapshot:</p>
-          {analysis.snapshotBullets.map((bullet, i) => (
-            <p key={i} className="text-gray-400 text-xs">- {bullet}</p>
-          ))}
+      {/* Next step instruction */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <div className="text-center">
+          {pdfDownloaded ? (
+            <>
+              <p className="text-white text-sm font-bold mb-1">
+                PDF Downloaded! Now book your strategy call below.
+              </p>
+              <p className="text-gray-400 text-xs mb-3">
+                Scroll down to the calendar form and upload the PDF you just downloaded.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-white text-sm font-bold mb-1">
+                Step 1: Download your report above.
+              </p>
+              <p className="text-gray-400 text-xs mb-3">
+                Step 2: Scroll down, book a strategy call, and upload your PDF.
+              </p>
+            </>
+          )}
+          <ArrowDown className="w-5 h-5 text-brand-cyan mx-auto animate-bounce" />
         </div>
-        <p className="text-brand-blue-accent text-sm font-semibold mt-3 text-center">
-          Ready to stop the bleeding? Tap below.
-        </p>
       </div>
-
-      <CTAButtons onDismiss={onDismiss} />
     </div>
   );
 }

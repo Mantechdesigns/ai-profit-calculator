@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Shield } from 'lucide-react';
 import useFormWizard from '../hooks/useFormWizard';
 import useAnalysis from '../hooks/useAnalysis';
@@ -10,11 +10,10 @@ import StepBusinessContext from './steps/StepBusinessContext';
 import StepContactInfo from './steps/StepContactInfo';
 import StepLeadMetrics from './steps/StepLeadMetrics';
 import ResultsPanel from './results/ResultsPanel';
-import StepTwoSection from './results/StepTwoSection';
 import { createGHLContact, sendGHLWebhook } from '../lib/ghl';
 import { supabase } from '../lib/supabase';
 
-type WidgetState = 'form' | 'analyzing' | 'results' | 'results-collapsed' | 'dismissed';
+type WidgetState = 'form' | 'analyzing' | 'results';
 
 export default function Widget() {
   const [widgetState, setWidgetState] = useState<WidgetState>('form');
@@ -74,10 +73,6 @@ export default function Widget() {
     }
   };
 
-  if (widgetState === 'dismissed') {
-    return null;
-  }
-
   return (
     <div className="bg-brand-dark/95 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
       {/* Header */}
@@ -131,30 +126,7 @@ export default function Widget() {
           <ResultsPanel
             analysis={analysis}
             formData={formData}
-            onDismiss={() => setWidgetState('results-collapsed')}
           />
-        )}
-
-        {widgetState === 'results-collapsed' && analysis && (
-          <>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-400">Your Profit Leak Report</p>
-                  <p className="text-brand-cyan font-bold text-lg">
-                    ${analysis.totalAnnualLeak.toLocaleString()}/year
-                  </p>
-                </div>
-                <button
-                  onClick={() => setWidgetState('results')}
-                  className="text-xs text-brand-blue-accent hover:text-white transition-colors underline"
-                >
-                  View Full Results
-                </button>
-              </div>
-            </div>
-            <StepTwoSection email={formData.email} firstName={formData.firstName} />
-          </>
         )}
       </div>
 
