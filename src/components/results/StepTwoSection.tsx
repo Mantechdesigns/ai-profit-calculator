@@ -1,7 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Play } from 'lucide-react';
 
-export default function StepTwoSection() {
+interface StepTwoSectionProps {
+  email?: string;
+  firstName?: string;
+}
+
+export default function StepTwoSection({ email, firstName }: StepTwoSectionProps) {
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://ai.mantechdesigns.com/js/form_embed.js';
@@ -11,6 +16,15 @@ export default function StepTwoSection() {
       document.body.removeChild(script);
     };
   }, []);
+
+  // Build survey URL with pre-populated fields
+  const surveyBaseUrl = 'https://ai.mantechdesigns.com/widget/survey/TuWaHqf61ArtpYON5OTb';
+  const params = new URLSearchParams();
+  if (email) params.set('email', email);
+  if (firstName) params.set('first_name', firstName);
+  const surveyUrl = params.toString()
+    ? `${surveyBaseUrl}?${params.toString()}`
+    : surveyBaseUrl;
 
   return (
     <div className="animate-fadeIn">
@@ -26,7 +40,7 @@ export default function StepTwoSection() {
 
       <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-6">
         <iframe
-          src="https://ai.mantechdesigns.com/widget/survey/TuWaHqf61ArtpYON5OTb"
+          src={surveyUrl}
           style={{ width: '100%', minHeight: '500px', border: 'none' }}
           scrolling="no"
           id="TuWaHqf61ArtpYON5OTb"

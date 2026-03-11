@@ -153,7 +153,7 @@ export default function Widget() {
                 </button>
               </div>
             </div>
-            <StepTwoSection />
+            <StepTwoSection email={formData.email} firstName={formData.firstName} />
           </>
         )}
       </div>
