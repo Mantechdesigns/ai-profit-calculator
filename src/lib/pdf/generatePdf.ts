@@ -100,6 +100,9 @@ export async function generateProfitLeakPdf(
   y += 6;
   y = drawPillarRow(doc, 'Retention & LTV', analysis.pillars.retentionLTV, y);
   drawGoldLine(doc, y);
+  y += 6;
+  y = drawPillarRow(doc, 'CEO Bottleneck', analysis.pillars.ceoBottleneck, y);
+  drawGoldLine(doc, y);
   y += 10;
 
   // Total
@@ -125,6 +128,7 @@ export async function generateProfitLeakPdf(
     { name: 'Lead Gen', pct: analysis.pillars.leadGeneration.leakPercentage },
     { name: 'Branding', pct: analysis.pillars.authorityBranding.leakPercentage },
     { name: 'Retention', pct: analysis.pillars.retentionLTV.leakPercentage },
+    { name: 'CEO Bottleneck', pct: analysis.pillars.ceoBottleneck.leakPercentage },
   ];
 
   for (const p of pillars) {
@@ -152,6 +156,7 @@ export async function generateProfitLeakPdf(
     ['Sales Follow-Up', analysis.pillars.salesFollowUp],
     ['Authority & Branding', analysis.pillars.authorityBranding],
     ['Retention & LTV', analysis.pillars.retentionLTV],
+    ['CEO Bottleneck', analysis.pillars.ceoBottleneck],
   ];
 
   for (const [name, pillar] of pillarEntries) {

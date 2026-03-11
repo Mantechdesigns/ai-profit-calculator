@@ -21,6 +21,7 @@ export interface AnalysisResponse {
     salesFollowUp: PillarAnalysis;
     authorityBranding: PillarAnalysis;
     retentionLTV: PillarAnalysis;
+    ceoBottleneck: PillarAnalysis;
   };
   biggestLeak: string;
   bestImmediateFix: string;

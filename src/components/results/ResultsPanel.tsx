@@ -88,6 +88,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         <PillarCard name="Sales Follow-Up" analysis={analysis.pillars.salesFollowUp} />
         <PillarCard name="Authority & Branding" analysis={analysis.pillars.authorityBranding} />
         <PillarCard name="Retention & LTV" analysis={analysis.pillars.retentionLTV} />
+        <PillarCard name="CEO Bottleneck" analysis={analysis.pillars.ceoBottleneck} />
       </div>
 
       <div className="bg-brand-gold/10 border border-brand-gold/30 rounded-xl p-4 mb-4">
@@ -99,11 +100,27 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
       <Button
         onClick={handleDownloadPdf}
         disabled={isGeneratingPdf}
-        className="w-full flex items-center justify-center gap-2 mb-2"
+        className="w-full flex items-center justify-center gap-2 mb-4"
       >
         <Download className="w-4 h-4" />
         {isGeneratingPdf ? 'Generating PDF...' : 'Download Full PDF Report'}
       </Button>
+
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
+        <p className="text-gray-400 text-xs mb-2">Estimated total annual profit leak:</p>
+        <p className="text-brand-gold font-bold text-lg mb-3">${analysis.totalAnnualLeak.toLocaleString()}</p>
+        <p className="text-gray-400 text-xs">Biggest leak: <span className="text-white">{analysis.biggestLeak}</span></p>
+        <p className="text-gray-400 text-xs mt-1">Best immediate fix: <span className="text-brand-green">{analysis.bestImmediateFix}</span></p>
+        <div className="mt-3">
+          <p className="text-gray-400 text-xs font-medium mb-1">Quick snapshot:</p>
+          {analysis.snapshotBullets.map((bullet, i) => (
+            <p key={i} className="text-gray-400 text-xs">- {bullet}</p>
+          ))}
+        </div>
+        <p className="text-brand-green-accent text-sm font-semibold mt-3 text-center">
+          Go to the button below for Step 2.
+        </p>
+      </div>
 
       <CTAButtons onDismiss={onDismiss} />
     </div>
