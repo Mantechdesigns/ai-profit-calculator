@@ -29,7 +29,7 @@ export default function CheckboxGroup({ name, label, options, values, onChange }
               key={option}
               className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                 checked
-                  ? 'border-brand-green-accent bg-brand-green-accent/10 text-white'
+                  ? 'border-brand-blue-accent bg-brand-blue-accent/10 text-white'
                   : 'border-white/10 bg-white/5 text-gray-300 hover:border-white/20'
               }`}
             >
@@ -43,7 +43,7 @@ export default function CheckboxGroup({ name, label, options, values, onChange }
               />
               <div
                 className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                  checked ? 'border-brand-green-accent bg-brand-green-accent' : 'border-gray-500'
+                  checked ? 'border-brand-blue-accent bg-brand-blue-accent' : 'border-gray-500'
                 }`}
               >
                 {checked && <Check className="w-3 h-3 text-brand-dark" />}

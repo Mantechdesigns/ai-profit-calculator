@@ -46,12 +46,12 @@ export default function PillarCard({ name, analysis }: PillarCardProps) {
           {analysis.severity} Risk
         </span>
       </div>
-      <p className="text-brand-gold text-lg font-bold mb-1">
+      <p className="text-brand-cyan text-lg font-bold mb-1">
         ${analysis.leakAmount.toLocaleString()}/year
       </p>
       <p className="text-gray-400 text-xs mb-2">{analysis.explanation}</p>
       <p className="text-gray-300 text-xs">
-        <span className="text-brand-gold font-medium">Fix: </span>
+        <span className="text-brand-cyan font-medium">Fix: </span>
         {analysis.recommendation}
       </p>
     </div>

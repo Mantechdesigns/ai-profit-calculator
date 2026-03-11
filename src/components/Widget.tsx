@@ -80,7 +80,7 @@ export default function Widget() {
       {/* Header */}
       <div className="bg-brand-navy/50 px-6 py-4 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <Shield className="w-6 h-6 text-brand-gold" />
+          <Shield className="w-6 h-6 text-brand-cyan" />
           <div>
             <h1 className="text-white font-bold text-base">The Six-Figure Profit Leak Audit</h1>
             <p className="text-gray-400 text-xs">Discover where your business is leaking money</p>
@@ -138,13 +138,13 @@ export default function Widget() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Your Profit Leak Report</p>
-                  <p className="text-brand-gold font-bold text-lg">
+                  <p className="text-brand-cyan font-bold text-lg">
                     ${analysis.totalAnnualLeak.toLocaleString()}/year
                   </p>
                 </div>
                 <button
                   onClick={() => setWidgetState('results')}
-                  className="text-xs text-brand-green-accent hover:text-white transition-colors underline"
+                  className="text-xs text-brand-blue-accent hover:text-white transition-colors underline"
                 >
                   View Full Results
                 </button>

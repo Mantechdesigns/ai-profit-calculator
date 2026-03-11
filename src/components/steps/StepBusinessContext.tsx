@@ -11,7 +11,7 @@ interface StepBusinessContextProps {
 export default function StepBusinessContext({ formData, updateField }: StepBusinessContextProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-brand-gold mb-1">Business Context</h2>
+      <h2 className="text-lg font-bold text-brand-cyan mb-1">Business Context</h2>
       <p className="text-gray-400 text-sm mb-6">Help us understand your business situation.</p>
 
       <RadioGroup

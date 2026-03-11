@@ -17,7 +17,7 @@ interface StepPillarsProps {
 export default function StepPillars({ formData, updateField }: StepPillarsProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-brand-gold mb-1">Business Audit</h2>
+      <h2 className="text-lg font-bold text-brand-cyan mb-1">Business Audit</h2>
       <p className="text-gray-400 text-sm mb-6">Tell us about your current business systems.</p>
 
       <CheckboxGroup

@@ -13,7 +13,7 @@ export default function CTAButtons({ onDismiss }: CTAButtonsProps) {
         href="https://profitleakfix.com/stopleaks-1"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-green-accent hover:bg-brand-green-dark text-white font-semibold text-sm rounded-lg transition-all"
+        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-blue-accent hover:bg-brand-blue-dark text-white font-semibold text-sm rounded-lg transition-all"
       >
         <Play className="w-4 h-4" />
         Watch 15-Min Training

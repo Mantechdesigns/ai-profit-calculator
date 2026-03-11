@@ -10,7 +10,7 @@ interface StepContactInfoProps {
 export default function StepContactInfo({ formData, updateField }: StepContactInfoProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-brand-gold mb-1">Your Information</h2>
+      <h2 className="text-lg font-bold text-brand-cyan mb-1">Your Information</h2>
       <p className="text-gray-400 text-sm mb-6">We'll send your personalized report to this email.</p>
 
       <div className="mb-6">
@@ -25,7 +25,7 @@ export default function StepContactInfo({ formData, updateField }: StepContactIn
             onChange={(e) => updateField('email', e.target.value)}
             placeholder="your@email.com"
             required
-            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 text-sm"
+            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan/50 text-sm"
           />
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function StepContactInfo({ formData, updateField }: StepContactIn
             value={formData.firstName}
             onChange={(e) => updateField('firstName', e.target.value)}
             placeholder="Your first name"
-            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 text-sm"
+            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan/50 text-sm"
           />
         </div>
       </div>

@@ -16,7 +16,7 @@ interface StepLeadMetricsProps {
 export default function StepLeadMetrics({ formData, updateField }: StepLeadMetricsProps) {
   return (
     <div>
-      <h2 className="text-lg font-bold text-brand-gold mb-1">Lead Metrics</h2>
+      <h2 className="text-lg font-bold text-brand-cyan mb-1">Lead Metrics</h2>
       <p className="text-gray-400 text-sm mb-6">These numbers help us calculate your exact profit leak.</p>
 
       <RadioGroup

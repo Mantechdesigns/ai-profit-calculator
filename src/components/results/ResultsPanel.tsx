@@ -45,7 +45,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         <h2 className="text-2xl font-bold text-white mb-1">
           {formData.firstName ? `${formData.firstName}, your` : 'Your'} estimated annual profit leak:
         </h2>
-        <p className="text-4xl font-extrabold text-brand-gold">
+        <p className="text-4xl font-extrabold text-brand-cyan">
           ${analysis.totalAnnualLeak.toLocaleString()}
         </p>
         <p className="text-gray-400 text-sm mt-1">
@@ -55,14 +55,14 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
 
       <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
         <div className="flex items-start gap-3 mb-3">
-          <Target className="w-5 h-5 text-brand-gold flex-shrink-0 mt-0.5" />
+          <Target className="w-5 h-5 text-brand-cyan flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-white text-sm font-semibold">Biggest Leak</p>
             <p className="text-gray-400 text-sm">{analysis.biggestLeak}</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <Zap className="w-5 h-5 text-brand-green flex-shrink-0 mt-0.5" />
+          <Zap className="w-5 h-5 text-brand-blue-light flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-white text-sm font-semibold">Best Immediate Fix</p>
             <p className="text-gray-400 text-sm">{analysis.bestImmediateFix}</p>
@@ -75,7 +75,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         <ul className="space-y-1">
           {analysis.snapshotBullets.map((bullet, i) => (
             <li key={i} className="flex items-start gap-2 text-gray-400 text-sm">
-              <span className="text-brand-gold mt-0.5">-</span>
+              <span className="text-brand-cyan mt-0.5">-</span>
               {bullet}
             </li>
           ))}
@@ -91,7 +91,7 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
         <PillarCard name="CEO Bottleneck" analysis={analysis.pillars.ceoBottleneck} />
       </div>
 
-      <div className="bg-brand-gold/10 border border-brand-gold/30 rounded-xl p-4 mb-4">
+      <div className="bg-brand-cyan/10 border border-brand-cyan/30 rounded-xl p-4 mb-4">
         <p className="text-white text-sm font-semibold mb-1">
           Even if you recovered just half of this over the next 12 months, that's an extra ${Math.round(analysis.totalAnnualLeak / 2).toLocaleString()} in profit - without increasing ad spend or working more hours.
         </p>
@@ -108,16 +108,16 @@ export default function ResultsPanel({ analysis, formData, onDismiss }: ResultsP
 
       <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
         <p className="text-gray-400 text-xs mb-2">Estimated total annual profit leak:</p>
-        <p className="text-brand-gold font-bold text-lg mb-3">${analysis.totalAnnualLeak.toLocaleString()}</p>
+        <p className="text-brand-cyan font-bold text-lg mb-3">${analysis.totalAnnualLeak.toLocaleString()}</p>
         <p className="text-gray-400 text-xs">Biggest leak: <span className="text-white">{analysis.biggestLeak}</span></p>
-        <p className="text-gray-400 text-xs mt-1">Best immediate fix: <span className="text-brand-green">{analysis.bestImmediateFix}</span></p>
+        <p className="text-gray-400 text-xs mt-1">Best immediate fix: <span className="text-brand-blue-light">{analysis.bestImmediateFix}</span></p>
         <div className="mt-3">
           <p className="text-gray-400 text-xs font-medium mb-1">Quick snapshot:</p>
           {analysis.snapshotBullets.map((bullet, i) => (
             <p key={i} className="text-gray-400 text-xs">- {bullet}</p>
           ))}
         </div>
-        <p className="text-brand-green-accent text-sm font-semibold mt-3 text-center">
+        <p className="text-brand-blue-accent text-sm font-semibold mt-3 text-center">
           Go to the button below for Step 2.
         </p>
       </div>

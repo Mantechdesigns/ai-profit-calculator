@@ -5,7 +5,7 @@ export default function StepTwoSection() {
   return (
     <div className="animate-fadeIn">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 rounded-full bg-brand-green-accent flex items-center justify-center text-white font-bold text-sm">
+        <div className="w-8 h-8 rounded-full bg-brand-blue-accent flex items-center justify-center text-white font-bold text-sm">
           2
         </div>
         <div>
@@ -27,7 +27,7 @@ export default function StepTwoSection() {
         href="https://profitleakfix.com/stopleaks-1"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-green-accent hover:bg-brand-green-dark text-white font-semibold text-sm rounded-lg transition-all mb-3"
+        className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-blue-accent hover:bg-brand-blue-dark text-white font-semibold text-sm rounded-lg transition-all mb-3"
       >
         <Play className="w-4 h-4" />
         Watch Free Training
