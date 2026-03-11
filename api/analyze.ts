@@ -1,4 +1,4 @@
-interface Env {
+interface AnalyzeEnv {
   OPENAI_API_KEY: string;
   OPENAI_MODEL?: string;
 }
@@ -103,13 +103,11 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-export const onRequestOptions: PagesFunction<Env> = async () => {
+export function handleAnalyzeOptions(): Response {
   return new Response(null, { status: 204, headers: corsHeaders });
-};
+}
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
-
+export async function handleAnalyze(request: Request, env: AnalyzeEnv): Promise<Response> {
   const apiKey = env.OPENAI_API_KEY;
   const model = env.OPENAI_MODEL || 'gpt-4.1-mini';
 
@@ -190,4 +188,4 @@ Calculate the profit leak analysis based on these responses. Use ${estimatedAnnu
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
-};
+}

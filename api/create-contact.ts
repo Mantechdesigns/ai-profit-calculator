@@ -1,4 +1,4 @@
-interface Env {
+interface CreateContactEnv {
   GHL_API_KEY: string;
   GHL_LOCATION_ID: string;
 }
@@ -9,13 +9,11 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-export const onRequestOptions: PagesFunction<Env> = async () => {
+export function handleCreateContactOptions(): Response {
   return new Response(null, { status: 204, headers: corsHeaders });
-};
+}
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
-
+export async function handleCreateContact(request: Request, env: CreateContactEnv): Promise<Response> {
   const GHL_API_KEY = env.GHL_API_KEY;
   const GHL_LOCATION_ID = env.GHL_LOCATION_ID;
 
@@ -100,4 +98,4 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
-};
+}
