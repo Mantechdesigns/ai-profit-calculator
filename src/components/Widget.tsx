@@ -10,10 +10,11 @@ import StepBusinessContext from './steps/StepBusinessContext';
 import StepContactInfo from './steps/StepContactInfo';
 import StepLeadMetrics from './steps/StepLeadMetrics';
 import ResultsPanel from './results/ResultsPanel';
+import BookingSection from './results/BookingSection';
 import { createGHLContact, sendGHLWebhook } from '../lib/ghl';
 import { supabase } from '../lib/supabase';
 
-type WidgetState = 'form' | 'analyzing' | 'results';
+type WidgetState = 'form' | 'analyzing' | 'results' | 'booking';
 
 export default function Widget() {
   const [widgetState, setWidgetState] = useState<WidgetState>('form');
@@ -126,7 +127,12 @@ export default function Widget() {
           <ResultsPanel
             analysis={analysis}
             formData={formData}
+            onContinueToBooking={() => setWidgetState('booking')}
           />
+        )}
+
+        {widgetState === 'booking' && (
+          <BookingSection onBack={() => setWidgetState('results')} />
         )}
       </div>
 

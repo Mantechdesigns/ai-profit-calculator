@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, TrendingDown, Zap, Target, ArrowDown } from 'lucide-react';
+import { Download, TrendingDown, Zap, Target, ArrowRight, CheckCircle } from 'lucide-react';
 import type { AnalysisResponse } from '../../types/analysis';
 import type { AuditFormData } from '../../types/form';
 import PillarCard from './PillarCard';
@@ -8,9 +8,10 @@ import Button from '../ui/Button';
 interface ResultsPanelProps {
   analysis: AnalysisResponse;
   formData: AuditFormData;
+  onContinueToBooking: () => void;
 }
 
-export default function ResultsPanel({ analysis, formData }: ResultsPanelProps) {
+export default function ResultsPanel({ analysis, formData, onContinueToBooking }: ResultsPanelProps) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [pdfDownloaded, setPdfDownloaded] = useState(false);
 
@@ -104,34 +105,31 @@ export default function ResultsPanel({ analysis, formData }: ResultsPanelProps) 
         className="w-full flex items-center justify-center gap-2 mb-4"
       >
         <Download className="w-4 h-4" />
-        {isGeneratingPdf ? 'Generating PDF...' : 'Download Full PDF Report'}
+        {isGeneratingPdf ? 'Generating PDF...' : pdfDownloaded ? 'Download Again' : 'Download Full PDF Report'}
       </Button>
 
-      {/* Next step instruction */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-        <div className="text-center">
-          {pdfDownloaded ? (
-            <>
-              <p className="text-white text-sm font-bold mb-1">
-                PDF Downloaded! Now book your strategy call below.
-              </p>
-              <p className="text-gray-400 text-xs mb-3">
-                Scroll down to the calendar form and upload the PDF you just downloaded.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-white text-sm font-bold mb-1">
-                Step 1: Download your report above.
-              </p>
-              <p className="text-gray-400 text-xs mb-3">
-                Step 2: Scroll down, book a strategy call, and upload your PDF.
-              </p>
-            </>
-          )}
-          <ArrowDown className="w-5 h-5 text-brand-cyan mx-auto animate-bounce" />
+      {/* Continue to booking */}
+      {pdfDownloaded ? (
+        <button
+          onClick={onContinueToBooking}
+          className="group w-full rounded-xl bg-gradient-to-r from-brand-cyan via-brand-blue-accent to-brand-cyan bg-[length:200%_100%] animate-shimmer px-6 py-4 text-white font-bold text-base shadow-lg shadow-brand-cyan/25 hover:shadow-brand-cyan/40 transition-shadow"
+        >
+          <div className="flex items-center justify-center gap-2">
+            <CheckCircle className="w-4 h-4" />
+            <span>Book Your Free Strategy Call</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </div>
+          <p className="text-white/80 text-xs mt-1 font-normal">
+            You'll need to upload the PDF you just downloaded
+          </p>
+        </button>
+      ) : (
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+          <p className="text-gray-400 text-sm">
+            Download your report first, then book your strategy call.
+          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 }
