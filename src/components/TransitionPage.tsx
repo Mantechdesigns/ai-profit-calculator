@@ -1,12 +1,54 @@
 import { useState, useEffect, useRef } from 'react';
-import { trackTrainingClick } from '../lib/metaPixel';
+import { trackTrainingClick, trackPdfDownload } from '../lib/metaPixel';
+import type { AuditResult } from '../lib/calculations';
 
 const VSL_URL = 'https://profitleakfix.com/stopleaks-1';
 
-export default function TransitionPage() {
-  const [countdown, setCountdown] = useState(30);
-  const hasRedirected = useRef(false);
+interface TransitionPageProps {
+  firstName: string;
+  result: AuditResult;
+  scores: Record<string, number>;
+}
 
+export default function TransitionPage({ firstName, result, scores }: TransitionPageProps) {
+  const [countdown, setCountdown] = useState(30);
+  const [pdfStatus, setPdfStatus] = useState<'generating' | 'ready' | 'error'>('generating');
+  const hasRedirected = useRef(false);
+  const pdfBlobUrl = useRef<string | null>(null);
+
+  // Auto-generate PDF on mount
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const { generateProfitLeakPdfV2 } = await import('../lib/pdf/generatePdfV2');
+        const blob = await generateProfitLeakPdfV2(firstName, result, scores);
+
+        if (cancelled) return;
+
+        const url = URL.createObjectURL(blob);
+        pdfBlobUrl.current = url;
+        setPdfStatus('ready');
+        trackPdfDownload();
+
+        // Auto-download the PDF
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Profit-Leak-Report-${firstName || 'Report'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        console.error('PDF generation failed:', err);
+        if (!cancelled) setPdfStatus('error');
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [firstName, result, scores]);
+
+  // Countdown timer
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdown((prev) => {
@@ -31,13 +73,41 @@ export default function TransitionPage() {
     }
   };
 
+  const handleDownloadPdf = () => {
+    if (pdfBlobUrl.current) {
+      const a = document.createElement('a');
+      a.href = pdfBlobUrl.current;
+      a.download = `Profit-Leak-Report-${firstName || 'Report'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
       <div className="max-w-lg mx-auto">
-        {/* Confirmation line */}
-        <p className="text-white text-base md:text-lg mb-8">
-          Your full Profit Gap Report is on its way to your inbox.
-        </p>
+        {/* PDF status line */}
+        <div className="mb-6">
+          {pdfStatus === 'generating' && (
+            <p className="text-text-secondary text-sm animate-pulse">
+              Generating your Profit Gap Report...
+            </p>
+          )}
+          {pdfStatus === 'ready' && (
+            <p className="text-accent-teal text-sm font-medium">
+              Your Profit Gap Report has been downloaded.{' '}
+              <button onClick={handleDownloadPdf} className="underline hover:text-white transition-colors">
+                Download again
+              </button>
+            </p>
+          )}
+          {pdfStatus === 'error' && (
+            <p className="text-text-secondary text-sm">
+              Your full Profit Gap Report is on its way to your inbox.
+            </p>
+          )}
+        </div>
 
         {/* Transition headline */}
         <h1 className="text-2xl md:text-3xl font-bold text-accent-gold leading-tight mb-6">

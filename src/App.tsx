@@ -65,7 +65,11 @@ export default function App() {
     setQuizIndex(QUIZ_SECTIONS.length - 1);
   };
 
+  const [firstName, setFirstName] = useState('');
+
   const handleUnlock = (name: string, email: string) => {
+    setFirstName(name);
+
     if (auditResult) {
       trackLeadCapture(auditResult.totalLeak);
 
@@ -111,7 +115,13 @@ export default function App() {
         />
       )}
 
-      {step === 'transition' && <TransitionPage />}
+      {step === 'transition' && auditResult && (
+        <TransitionPage
+          firstName={firstName}
+          result={auditResult}
+          scores={scores}
+        />
+      )}
     </div>
   );
 }
