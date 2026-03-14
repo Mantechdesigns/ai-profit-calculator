@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { AuditResult } from '../lib/calculations';
+import { QUIZ_SECTIONS } from '../data/questions';
 
 interface ResultsBlurGateProps {
   result: AuditResult;
@@ -7,7 +8,7 @@ interface ResultsBlurGateProps {
   onUnlock: (firstName: string, email: string) => void;
 }
 
-export default function ResultsBlurGate({ result, onUnlock }: ResultsBlurGateProps) {
+export default function ResultsBlurGate({ result, scores, onUnlock }: ResultsBlurGateProps) {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,11 +50,14 @@ export default function ResultsBlurGate({ result, onUnlock }: ResultsBlurGatePro
 
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  // Sort pillars by score descending for the blurred preview
+  const sortedPillars = [...result.pillars].sort((a, b) => b.score - a.score);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6">
-      <div className="max-w-md mx-auto w-full">
+    <div className="min-h-screen px-4 py-6">
+      <div className="max-w-md mx-auto w-full flex flex-col items-center justify-center min-h-[90vh]">
         {/* SECTION A: Partial Results */}
-        <div className="text-center mb-5 animate-fadeIn">
+        <div className="text-center mb-5 animate-fadeIn w-full">
           <div className="inline-flex items-center gap-2 bg-accent-red/10 border border-accent-red/30 px-3 py-1 rounded-full mb-3">
             <span className="text-accent-red text-xs font-medium">Profit Leak Detected</span>
           </div>
@@ -80,10 +84,10 @@ export default function ResultsBlurGate({ result, onUnlock }: ResultsBlurGatePro
         </div>
 
         {/* Subtle separator */}
-        <div className="border-t border-white/10 mb-5" />
+        <div className="border-t border-white/10 mb-5 w-full" />
 
-        {/* SECTION B: Opt-In Gate — directly below results, no blurred cards */}
-        <div className="bg-bg-card border border-border-card rounded-2xl p-5 shadow-2xl animate-fadeIn">
+        {/* SECTION B: Opt-In Gate */}
+        <div className="bg-bg-card border border-border-card rounded-2xl p-5 shadow-2xl animate-fadeIn w-full relative z-10">
           <div className="text-center mb-4">
             <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-accent-cyan/10 border border-accent-cyan/30 flex items-center justify-center">
               <svg className="w-5 h-5 text-accent-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,6 +139,39 @@ export default function ResultsBlurGate({ result, onUnlock }: ResultsBlurGatePro
           <p className="text-text-muted text-[10px] text-center mt-1.5">
             Financial figures shown are illustrative estimates based on your inputs. They do not guarantee specific results.
           </p>
+        </div>
+      </div>
+
+      {/* BLURRED PREVIEW — peeks behind and below the opt-in, scrollable */}
+      <div className="max-w-lg mx-auto -mt-4 select-none pointer-events-none">
+        <div className="filter blur-[6px]">
+          {sortedPillars.map((pillar) => (
+            <div key={pillar.id} className="bg-bg-card border border-border-card rounded-xl p-5 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-white font-bold text-base">{pillar.name}</div>
+                <div
+                  className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                  style={{ backgroundColor: `${pillar.riskColor}20`, color: pillar.riskColor }}
+                >
+                  {pillar.risk}
+                </div>
+              </div>
+              <p className="text-2xl font-extrabold mb-3" style={{ color: pillar.riskColor }}>
+                ${pillar.leakAmount.toLocaleString()}<span className="text-sm font-normal text-text-muted">/year</span>
+              </p>
+              <div className="mb-3">
+                <p className="text-text-muted text-xs font-semibold uppercase tracking-wider mb-1">Diagnosis</p>
+                <div className="h-3 bg-white/10 rounded w-full mb-1" />
+                <div className="h-3 bg-white/10 rounded w-4/5 mb-1" />
+                <div className="h-3 bg-white/10 rounded w-3/5" />
+              </div>
+              <div>
+                <p className="text-text-muted text-xs font-semibold uppercase tracking-wider mb-1">DIY Fix</p>
+                <div className="h-3 bg-white/8 rounded w-full mb-1" />
+                <div className="h-3 bg-white/8 rounded w-5/6" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
