@@ -1,10 +1,126 @@
-import React from 'react';
-import Widget from './components/Widget';
+import { useState, useEffect } from 'react';
+import { QUIZ_SECTIONS } from './data/questions';
+import { calculateAudit, type AuditResult } from './lib/calculations';
+import { sendWebhook } from './lib/webhook';
+import { trackPageView, trackQuizStart, trackLeadCapture } from './lib/metaPixel';
+import WelcomeScreen from './components/WelcomeScreen';
+import QuizSection from './components/QuizSection';
+import RevenueInput from './components/RevenueInput';
+import LoadingAnimation from './components/LoadingAnimation';
+import ResultsBlurGate from './components/ResultsBlurGate';
+import FullResults from './components/FullResults';
+
+type AppStep = 'welcome' | 'quiz' | 'revenue' | 'loading' | 'blur-gate' | 'results';
 
 export default function App() {
+  const [step, setStep] = useState<AppStep>('welcome');
+  const [quizIndex, setQuizIndex] = useState(0);
+  const [scores, setScores] = useState<Record<string, number>>({});
+  const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    trackPageView();
+  }, []);
+
+  const handleStart = () => {
+    setStep('quiz');
+    trackQuizStart();
+  };
+
+  const handleQuizSelect = (score: number) => {
+    const section = QUIZ_SECTIONS[quizIndex];
+    const newScores = { ...scores, [section.id]: score };
+    setScores(newScores);
+
+    if (quizIndex < QUIZ_SECTIONS.length - 1) {
+      setQuizIndex(quizIndex + 1);
+    } else {
+      setStep('revenue');
+    }
+  };
+
+  const handleQuizBack = () => {
+    if (quizIndex > 0) {
+      setQuizIndex(quizIndex - 1);
+    } else {
+      setStep('welcome');
+    }
+  };
+
+  const handleRevenueSelect = (annualRevenue: number, label: string) => {
+    setStep('loading');
+
+    // Calculate results
+    const result = calculateAudit(scores, annualRevenue, label);
+    setAuditResult(result);
+
+    // Show loading for 1.5-2 seconds
+    setTimeout(() => {
+      setStep('blur-gate');
+    }, 1800);
+  };
+
+  const handleRevenueBack = () => {
+    setStep('quiz');
+    setQuizIndex(QUIZ_SECTIONS.length - 1);
+  };
+
+  const handleUnlock = (name: string, email: string) => {
+    setFirstName(name);
+
+    if (auditResult) {
+      trackLeadCapture(auditResult.totalLeak);
+
+      // Fire webhook (fire-and-forget)
+      sendWebhook(name, email, auditResult).catch((err) =>
+        console.error('Webhook failed:', err)
+      );
+    }
+
+    setStep('results');
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto p-4">
-      <Widget />
+    <div className="min-h-screen bg-bg-primary">
+      {step === 'welcome' && <WelcomeScreen onStart={handleStart} />}
+
+      {step === 'quiz' && (
+        <QuizSection
+          section={QUIZ_SECTIONS[quizIndex]}
+          currentStep={quizIndex}
+          totalSteps={QUIZ_SECTIONS.length}
+          selectedScore={scores[QUIZ_SECTIONS[quizIndex].id] ?? null}
+          onSelect={handleQuizSelect}
+          onBack={handleQuizBack}
+          canGoBack={true}
+        />
+      )}
+
+      {step === 'revenue' && (
+        <RevenueInput
+          onSelect={handleRevenueSelect}
+          onBack={handleRevenueBack}
+        />
+      )}
+
+      {step === 'loading' && <LoadingAnimation />}
+
+      {step === 'blur-gate' && auditResult && (
+        <ResultsBlurGate
+          result={auditResult}
+          scores={scores}
+          onUnlock={handleUnlock}
+        />
+      )}
+
+      {step === 'results' && auditResult && (
+        <FullResults
+          result={auditResult}
+          scores={scores}
+          firstName={firstName}
+        />
+      )}
     </div>
   );
 }
