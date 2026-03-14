@@ -1,3 +1,5 @@
+import TrustStrip from './TrustStrip';
+
 interface WelcomeScreenProps {
   onStart: () => void;
 }
@@ -28,14 +30,7 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps) {
         </button>
 
         {/* Trust strip */}
-        <div className="mt-8 space-y-1">
-          <p className="text-text-muted text-xs">
-            As Featured On: Fox News · CBS · NBC · USA Today
-          </p>
-          <p className="text-text-muted text-xs">
-            Used by 500+ service-based CEOs and business owners
-          </p>
-        </div>
+        <TrustStrip />
       </div>
 
       <footer className="mt-16">
