@@ -4,28 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-dark': '#0a1628',
-        'brand-darker': '#0d1117',
-        'brand-navy': '#111d33',
-        'brand-cyan': '#06d6f2',
-        'brand-cyan-dark': '#0891b2',
-        'brand-blue': '#188bf6',
-        'brand-blue-light': '#38bdf8',
-        'brand-blue-accent': '#0ea5e9',
-        'brand-blue-dark': '#0284c7',
+        'bg-primary': '#0D1B2A',
+        'bg-card': '#111827',
+        'bg-card-hover': '#1A2332',
+        'accent-gold': '#D4A843',
+        'accent-cyan': '#00D4FF',
+        'accent-teal': '#00D4AA',
+        'accent-red': '#E53E3E',
+        'accent-orange': '#ED8936',
+        'accent-yellow': '#FFD93D',
+        'accent-green': '#00C853',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#A0AEC0',
+        'text-muted': '#64748B',
+        'border-card': 'rgba(255, 255, 255, 0.08)',
+        'blur-overlay': 'rgba(13, 27, 42, 0.6)',
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['"Inter"', 'system-ui', 'sans-serif'],
       },
-      animation: {
-        shimmer: 'shimmer 2s linear infinite',
-      },
-      keyframes: {
-        shimmer: {
-          '0%': { backgroundPosition: '200% 0' },
-          '100%': { backgroundPosition: '-200% 0' },
-        },
+      backgroundImage: {
+        'gradient-cta': 'linear-gradient(135deg, #00D4AA, #00B4D8)',
       },
     },
   },
