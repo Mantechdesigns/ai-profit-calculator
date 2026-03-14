@@ -8,16 +8,15 @@ import QuizSection from './components/QuizSection';
 import RevenueInput from './components/RevenueInput';
 import LoadingAnimation from './components/LoadingAnimation';
 import ResultsBlurGate from './components/ResultsBlurGate';
-import FullResults from './components/FullResults';
+import TransitionPage from './components/TransitionPage';
 
-type AppStep = 'welcome' | 'quiz' | 'revenue' | 'loading' | 'blur-gate' | 'results';
+type AppStep = 'welcome' | 'quiz' | 'revenue' | 'loading' | 'blur-gate' | 'transition';
 
 export default function App() {
   const [step, setStep] = useState<AppStep>('welcome');
   const [quizIndex, setQuizIndex] = useState(0);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
-  const [firstName, setFirstName] = useState('');
 
   useEffect(() => {
     trackPageView();
@@ -67,18 +66,16 @@ export default function App() {
   };
 
   const handleUnlock = (name: string, email: string) => {
-    setFirstName(name);
-
     if (auditResult) {
       trackLeadCapture(auditResult.totalLeak);
 
-      // Fire webhook (fire-and-forget)
+      // Fire webhook (fire-and-forget) — DO NOT MODIFY
       sendWebhook(name, email, auditResult).catch((err) =>
         console.error('Webhook failed:', err)
       );
     }
 
-    setStep('results');
+    setStep('transition');
   };
 
   return (
@@ -114,13 +111,7 @@ export default function App() {
         />
       )}
 
-      {step === 'results' && auditResult && (
-        <FullResults
-          result={auditResult}
-          scores={scores}
-          firstName={firstName}
-        />
-      )}
+      {step === 'transition' && <TransitionPage />}
     </div>
   );
 }
