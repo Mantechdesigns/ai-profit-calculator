@@ -116,7 +116,7 @@ export default function TransitionPage({ firstName, result, scores }: Transition
 
         {/* Value statement */}
         <p className="text-white text-base md:text-lg leading-relaxed mb-10 max-w-md mx-auto">
-          In the next 28 minutes, you'll see the exact system service-based CEOs use to find and fix their biggest profit leaks — often within the first 14 days. This training is free, on-demand, and available right now.
+          In less than 10 minutes, you'll see the exact system service-based CEOs use to find and fix their biggest profit leaks — often within the first 14 days. This training is free, on-demand, and available right now.
         </p>
 
         {/* Countdown */}
@@ -135,7 +135,7 @@ export default function TransitionPage({ firstName, result, scores }: Transition
 
         {/* Supporting line */}
         <p className="text-text-muted text-sm">
-          No credit card. No pitch on this page. Just the system.
+          No credit card. Exclusive invite. Just the system.
         </p>
       </div>
     </div>
