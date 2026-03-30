@@ -12,7 +12,7 @@ interface CalendarBookingPageYTProps {
 
 export default function CalendarBookingPageYT({ firstName, result, scores }: CalendarBookingPageYTProps) {
   const [pdfStatus, setPdfStatus] = useState<'generating' | 'ready' | 'error'>('generating');
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(20);
   const pdfBlobUrl = useRef<string | null>(null);
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
