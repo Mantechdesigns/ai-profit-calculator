@@ -23,7 +23,7 @@ export default function CTAButtons({ onDismiss }: CTAButtonsProps) {
       </button>
 
       <a
-        href="https://ai.mantechdesigns.com/widget/bookings/resilience"
+        href="https://profitleakfix.com/audit-calendar-yt"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm rounded-lg transition-all"

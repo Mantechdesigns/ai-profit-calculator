@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { trackBookingClick, trackPdfDownload } from '../lib/metaPixel';
 import type { AuditResult } from '../lib/calculations';
 
-const BOOKING_URL = 'https://ai.mantechdesigns.com/widget/bookings/resilience';
+const BOOKING_URL = 'https://profitleakfix.com/audit-calendar-yt';
 
 interface CalendarBookingPageProps {
   firstName: string;

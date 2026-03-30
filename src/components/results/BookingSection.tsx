@@ -48,7 +48,7 @@ export default function BookingSection({ onBack }: BookingSectionProps) {
       {/* Embedded calendar booking form */}
       <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-4">
         <iframe
-          src="https://ai.mantechdesigns.com/widget/bookings/resilience"
+          src="https://profitleakfix.com/audit-calendar-yt"
           style={{ width: '100%', minHeight: '600px', border: 'none' }}
           scrolling="no"
           id="resilience-booking"
