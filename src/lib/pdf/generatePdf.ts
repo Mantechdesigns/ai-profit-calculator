@@ -361,8 +361,8 @@ export async function generateProfitLeakPdf(
   doc.text('No charge, no obligation.', 20, y);
   y += 5;
   doc.setTextColor(...PDF_COLORS.white);
-  doc.textWithLink('https://ai.mantechdesigns.com/widget/bookings/resilience', 20, y, {
-    url: 'https://ai.mantechdesigns.com/widget/bookings/resilience',
+  doc.textWithLink('https://profitleakfix.com/audit-calendar-yt', 20, y, {
+    url: 'https://profitleakfix.com/audit-calendar-yt',
   });
   y += 15;
 
