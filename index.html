@@ -3,12 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>The Six-Figure Profit Leak Audit</title>
-    <meta name="description" content="Discover where your business is leaking profit in under 90 seconds. Free AI-powered audit by Business Resilience Revolution." />
+    <title>AI Profit Leak Audit</title>
+    <meta name="description" content="Discover where your business is leaking profit in under 90 seconds. Free AI-powered audit." />
     <link rel="icon" type="image/png" href="./src/assets/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Dynamic title based on route -->
+    <script>
+      (function() {
+        var p = window.location.pathname;
+        if (p.indexOf('/profitaudit-yt') === 0) document.title = 'AI Profit Leak Audit';
+        else if (p.indexOf('/next-steps-yt') === 0) document.title = 'Next Steps — AI Profit Leak Audit';
+        else if (p.indexOf('/audit-calendar-yt') === 0) document.title = 'Book Your Call — AI Profit Leak Audit';
+        else document.title = 'The Six-Figure Profit Leak Audit';
+      })();
+    </script>
 
     <!-- Meta Pixel Code -->
     <script>
@@ -30,3 +41,4 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
