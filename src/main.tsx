@@ -17,11 +17,18 @@ function getRouteComponent() {
 
 function Root() {
   useEffect(() => {
+    let lastHeight = 0;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
     const observer = new ResizeObserver(() => {
-      const height = document.getElementById('root')?.scrollHeight;
-      if (height) {
-        window.parent.postMessage({ type: 'profit-leak-resize', height }, '*');
-      }
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const height = document.getElementById('root')?.scrollHeight;
+        if (height && Math.abs(height - lastHeight) > 5) {
+          lastHeight = height;
+          window.parent.postMessage({ type: 'profit-leak-resize', height }, '*');
+        }
+      }, 150);
     });
 
     const rootEl = document.getElementById('root');
@@ -29,7 +36,10 @@ function Root() {
       observer.observe(rootEl);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (debounceTimer) clearTimeout(debounceTimer);
+    };
   }, []);
 
   return (
