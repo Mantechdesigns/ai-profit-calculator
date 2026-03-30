@@ -15,30 +15,66 @@ function getRouteComponent() {
   return <App />;
 }
 
+/**
+ * Measure the actual rendered content height by looking at child bounding rects
+ * instead of scrollHeight (which inflates in iframe resize feedback loops).
+ */
+function getContentHeight(): number {
+  const rootEl = document.getElementById('root');
+  if (!rootEl || !rootEl.firstElementChild) return 0;
+
+  // Get bounding rect of the actual content (not the root container)
+  const rect = rootEl.firstElementChild.getBoundingClientRect();
+  return Math.ceil(rect.height);
+}
+
 function Root() {
   useEffect(() => {
-    let lastHeight = 0;
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    // Skip if not in an iframe
+    if (window.self === window.top) return;
 
-    const observer = new ResizeObserver(() => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        const height = document.getElementById('root')?.scrollHeight;
-        if (height && Math.abs(height - lastHeight) > 5) {
-          lastHeight = height;
-          window.parent.postMessage({ type: 'profit-leak-resize', height }, '*');
-        }
-      }, 150);
+    let lastSentHeight = 0;
+    let rafId: number | null = null;
+
+    function sendHeight() {
+      const height = getContentHeight();
+      // Only send if height actually changed significantly and is reasonable
+      if (height > 0 && height < 3000 && Math.abs(height - lastSentHeight) > 10) {
+        lastSentHeight = height;
+        window.parent.postMessage({ type: 'profit-leak-resize', height }, '*');
+      }
+    }
+
+    // Use MutationObserver to detect DOM changes (step transitions, etc.)
+    const mutationObserver = new MutationObserver(() => {
+      // Cancel any pending measurement
+      if (rafId) cancelAnimationFrame(rafId);
+      // Wait for next paint before measuring
+      rafId = requestAnimationFrame(() => {
+        setTimeout(sendHeight, 100);
+      });
     });
 
     const rootEl = document.getElementById('root');
     if (rootEl) {
-      observer.observe(rootEl);
+      mutationObserver.observe(rootEl, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true,
+      });
     }
 
+    // Initial measurement after mount
+    setTimeout(sendHeight, 300);
+
+    // Periodic check as safety net (every 2s, not a tight loop)
+    const interval = setInterval(sendHeight, 2000);
+
     return () => {
-      observer.disconnect();
-      if (debounceTimer) clearTimeout(debounceTimer);
+      mutationObserver.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+      clearInterval(interval);
     };
   }, []);
 
